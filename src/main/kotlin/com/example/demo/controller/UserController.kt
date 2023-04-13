@@ -19,10 +19,8 @@ import reactor.kotlin.core.publisher.toMono
 class UserController(private val userApiService: UserApiService, private val userRepo: UserRepository) {
     @GetMapping
     suspend fun getStatus(@PathVariable bin: String): Mono<UserResponse> {
-        if (userRepo.getBinExist(bin).awaitFirstOrNull() != null) {
-            return userRepo.getBinExist(bin).toMono()
-        }
-        return userRepo.save(userApiService.getStatus(bin))
+        return if (userRepo.getBinExist(bin).awaitFirstOrNull() != null) userRepo.getBinExist(bin).toMono()
+        else userRepo.save(userApiService.getStatus(bin))
     }
 
 }
